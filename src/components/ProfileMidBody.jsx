@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { Button, Col, Image, Nav, Row, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import ProfilePostCard from "./ProfilePostCard";
-import { fetchPostsByUser } from "../features/posts/postsSlice";
+import { fetchPostsByUserId } from "../features/posts/postsSlice";
 import { AuthContext } from "./AuthProvider";
 
 export default function ProfileMidBody() {
@@ -18,7 +18,7 @@ export default function ProfileMidBody() {
 
 
     useEffect(() => {
-        dispatch(fetchPostsByUser(currentUser.uid));
+        dispatch(fetchPostsByUserId(currentUser.uid));
     }, [dispatch, currentUser]);
 
     return (

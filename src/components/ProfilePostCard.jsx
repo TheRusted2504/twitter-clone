@@ -1,11 +1,12 @@
 import { useContext, useState } from "react";
 import { Button, Col, Image, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { likePost, removeLikeFromPost } from "../features/posts/postsSlice";
+import { deletePost, likePost, removeLikeFromPost } from "../features/posts/postsSlice";
 import { AuthContext } from "./AuthProvider";
+import UpdatePostModal from "./UpdatePostModal";
 
 export default function ProfilePostCard({ post }) {
-    const { content, id: postId } = post;
+    const { content, id: postId, imageUrl } = post;
     const [likes, setLikes] = useState(post.likes || []);
     const dispatch = useDispatch();
     const { currentUser } = useContext(AuthContext);
@@ -16,7 +17,16 @@ export default function ProfilePostCard({ post }) {
 
     const pic = "https://pbs.twimg.com/profile_images/1587405892437221376/h167Jlb2_400x400.jpg";
 
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+
+    const handleShowUpdateModal = () => setShowUpdateModal(true);
+    const handleCloseUpdateModal = () => setShowUpdateModal(false);
+
     const handleLike = () => (isLiked ? removeFromLikes() : addToLikes());
+
+    const handleDelete = () => {
+        dispatch(deletePost({ userId, postId }))
+    }
 
     const addToLikes = () => {
         setLikes([...likes, userId]);
@@ -44,6 +54,7 @@ export default function ProfilePostCard({ post }) {
                 <strong>Haris</strong>
                 <span> @haris.samingan · Apr 16</span>
                 <p>{content}</p>
+                <Image src={imageUrl} style={{ width: 150 }} />
                 <div className="d-flex justify-content-between">
                     <Button variant="light">
                         <i className="bi bi-chat"></i>
@@ -65,6 +76,23 @@ export default function ProfilePostCard({ post }) {
                     <Button variant="light">
                         <i className="bi bi-upload"></i>
                     </Button>
+                    <Button variant="light">
+                        <i
+                            className="bi bi-pencil-square"
+                            onClick={handleShowUpdateModal}
+                        ></i>
+                    </Button>
+                    <Button variant='light'>
+                        <i className="bi bi-trash"
+                            onClick={handleDelete}
+                        ></i>
+                    </Button>
+                    <UpdatePostModal
+                        show={showUpdateModal}
+                        handleClose={handleCloseUpdateModal}
+                        postId={postId}
+                        originalPostContent={content}
+                    />
                 </div>
             </Col>
         </Row>
